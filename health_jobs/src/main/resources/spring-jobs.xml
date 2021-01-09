@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:task="http://www.springframework.org/schema/task"
+       xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+
+
+    <!--
+        使用配置文件配置定时任务组件Quartz  (spring整合quartz)
+        1.配置任务工程  使用bean标签  个人任务相当与spring整合的ioc
+        2.配置任务策略  策略中指定任务工程 即类    和策略方法  即类中的方法
+        3.配置触发器    触发器指定任务策略   和触发时机
+        4.配置quartz调度容器  个人认为quartz调度容器对于quartz 相当于 spring核心容器对于spring框架
+          早调度容器中绑定触发器
+
+
+        注解配置
+        只需要配置对应的任务注解驱动 和任务线程池
+
+    -->
+
+
+<!--5.1 task:annotation-driven, ThreadPoolTaskScheduler -->
+    <task:annotation-driven/>
+    <bean class="org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler"/>
+
+    <!--
+        服务注册到zookeeper上  注解配置
+
+        三板斧: dubbo   名称
+                        注册中心
+                        扫哪的包  {前面配置定时任务也需要扫包 下面的扫包操作可以涵盖}
+    -->
+
+<!--5.2 应用名称 -->
+    <dubbo:application name="health_jobs"/>
+<!--5.3 注册中心在哪 -->
+    <dubbo:registry address="zookeeper://127.0.0.1:2181"/>
+<!--5.4 dubbo注解扫包(controller时的扫包)  -->
+    <dubbo:annotation package="com.itheima.health.jobs"/>
+
+</beans>
